@@ -13,9 +13,9 @@ MODELO BISSE
 
 Este fue el primer modelo que se describió de este tipo, en donde las tasas de diversificación (especiación y extinción) dependen del estado de carácter un caracter discreto binario (Madison et al., 2007).
 
-En este caso podemos ajustar un modelo en donde ajustamos la evolución de nuestro carácter discreto binario y nuestro árbol se ajusta a un proceso de tipo birth-death pero no está influenciado por los estados de carácter de nuestro rasgo de interés con modelo en donde las tasas de extinción y especiación si están influenciadas por el estado de caracter de nuestro rasgo binario (Madison et al., 2007).
+En este caso podemos ajustar un modelo en donde ajustamos la evolución de nuestro carácter discreto binario y nuestro árbol se ajusta a un proceso de tipo birth-death pero no está influenciado por los estados de carácter de nuestro rasgo de interés y compararlo con modelo en donde las tasas de extinción y especiación si están influenciadas por el estado de caracter de nuestro rasgo binario (Madison et al., 2007).
 
-El modelo BiSSE está implementado en el paquete de R diversitree. Usaremos la función tree.bisse Esta función ajusta 6 parámetros del modelo BiSSE que son las tasa de speciación en el estado 0, la tasa de especiación en el estado 1, la tasa de extinción en el estado 0, la tasa de extinción en el estado 1, la tasa de transición de 0 a 1 y la tasa de transición de 1 a 0 (lambda0, lambda1, mu0, mu1, q01, q10).
+El modelo BiSSE está implementado en el paquete de R diversitree. Usaremos la función tree.bisse . Esta función ajusta 6 parámetros del modelo BiSSE que son la tasa de especiación en el estado 0, la tasa de especiación en el estado 1, la tasa de extinción en el estado 0, la tasa de extinción en el estado 1, la tasa de transición de 0 a 1 y la tasa de transición de 1 a 0 (lambda0, lambda1, mu0, mu1, q01, q10).
 Para compararlo con un modelo nulo, simularemos un proceso birth-deatth con un caracter binario que evoluciona bajo un modelo de tip Mk, pero en donde no hay dependencia entre las tasas de diversificación y los estados de caracter del rasgo binario.
 
 ```{r}
@@ -47,9 +47,9 @@ mtext("(b)",lwd=1,adj=0,font=1)
 
 ```
 
-Podemos apreciar que en el primer caso hay una mayor tendencia a estar en el estado de caracter gris porque este tiene una tasa de diverisficación mayor que el negro. En el segundo caso no hay una tendencia tan clara.
+Podemos apreciar que en el primer caso hay una mayor tendencia a estar en el estado de caracter gris porque este tiene una tasa de diverisficación mayor que el negro (simulado con un modelo BiSSE). En el segundo caso no hay una tendencia tan clara (simulado con un modelo independiente).
 
-Ahora vamos a ajustar nuestro modelo con datos experimentales de peces de arrecifes de coral. Vamos a comparar el modelo en que las tasas de diverisificación están afectadas por los estados de caracter, vivis en arrecifes de coral frente a no vivir en arrecifes de coral, con otro modelo en donde dichas tasas son independientes (Price et al., 2013).
+Ahora vamos a ajustar nuestro modelo con datos experimentales de peces de arrecifes de coral. Vamos a comparar el modelo en que las tasas de diversificación están afectadas por los estados de caracter, vivir en arrecifes de coral frente a no vivir en arrecifes de coral, con otro modelo en donde dichas tasas son independientes (Price et al., 2013).
 
 Carguemos los datos  y echemos un vistazo.
 ```{r}
@@ -104,7 +104,7 @@ logLik(bissenull.mle)
 
 ```
 
-Se puede apreciar como las tasas de diversificación ajustadas en este modelo coinciden con las el modelo birth-death que saldría de la función fit.bd, pero la estima de probabilidad. Esto es porque la probabilidad del modelo constreñido incluye también la probabilidad de los datos del rasgo binario y de esta manera pueda ser comparado directamente con el modelo no constreñido.
+Se puede apreciar como las tasas de diversificación ajustadas en este modelo coinciden con las el modelo birth-death que saldría de la función fit.bd, pero la estima de probabilidad del modelo es diferente. Esto es porque la probabilidad del modelo constreñido incluye también la probabilidad de los datos del rasgo binario y de esta manera pueda ser comparado directamente con el modelo no constreñido.
 
 ```{r}
 ## run likelihood-ratio test
@@ -114,7 +114,7 @@ bisseAnova
 aicw(setNames(bisseAnova$AIC,rownames(bisseAnova)))
 ```
 
-Nuestros coeficientes sugiren que tanto la especiación como la extinción son más altas para peces que viven en arrecifes de coral que par a los que no. No obstante, la probabilidad del modelo más complejo no mejora de manera muy significativa el modelo nulo.
+Nuestros coeficientes sugiren que tanto la especiación como la extinción son más altas para peces que viven en arrecifes de coral que para los que no. No obstante, la probabilidad del modelo más complejo no mejora de manera muy significativa el modelo nulo.
 
 Ahora vamos a ajustar nuestro modelo BiSSE con MCMC bayesiano.
 
@@ -150,7 +150,7 @@ sum(bisse.mcmc$lambda1>bisse.mcmc$lambda0)/length(bisse.mcmc$lambda1)
 sum(bisse.mcmc$mu1>bisse.mcmc$mu0)/length(bisse.mcmc$mu1)
 ```
 
-Esto nos dice que la probabilidad a posteriori de que las tasas de diversificación en los peces de arrecifes de coral sea mayor que en los que no nos de arrecifes de coral es carcana a 1.
+Esto nos dice que la probabilidad a posteriori de que las tasas de diversificación en los peces de arrecifes de coral sea mayor que en los que no son de arrecifes de coral es carcana a 1.
 Este resultado parece contradecir a lo que hemos concluido en MLE.
 Quizás un modelo donde cambia la tasa de especiación pero la de extinción sea constante pueda tener mejor ajuste.
 
@@ -158,16 +158,16 @@ Quizás un modelo donde cambia la tasa de especiación pero la de extinción sea
 
 MODELO HISSE
 
-Uno de los grandes problemas de los modelos SSE es que hay mucho modelos es que tienen una gran tasa de error de tipo I. Nosotro comparamos el modelo BiSSE por ejemplo frente a un modelo nulo, que normalmente muestra peor ajuste, pero hay mucho modelos alternativos que podrían mostrar un mejor ajuste (Rabosky and Golberg, 2015).
-Es decir, que pasa si nuestro modelo nulo es peor que BiSSE pero cualquier otro modelo en donde las tasas de especiación y extinción no son constante si no que varian con el tiempo es mejor que nuestro modelo BiSSE. O quizás nuestras tasas varían en función de otro caracter pero que no estamos incluyendo en el análisis.
+Uno de los grandes problemas de los modelos SSE es que tienen una gran tasa de error de tipo I. Nosotros comparamos el modelo BiSSE por ejemplo frente a un modelo nulo, que normalmente muestra peor ajuste, pero hay muchos modelos alternativos que podrían mostrar un mejor ajuste que no necesariamente consideran una evolución conjunta de nuestro rasgo de interés y las tasas de diversificación (Rabosky & Golberg, 2015).
+Es decir, que pasa si nuestro modelo nulo es peor que BiSSE pero cualquier otro modelo en donde las tasas de especiación y extinción no son constantes, si no que varian con el tiempo, es mejor que nuestro modelo BiSSE. O quizás nuestras tasas varían en función de otro caracter pero que no estamos incluyendo en el análisis.
 
-Beaulier and O'Meara (2016) desarrollaron el modelo HiSSE para solventar este problema.
-Este modelo nos permite considerar la prosibildiad de que la especiació y la extinción varían pero no en función del carácter que estamos considerando en el análisis, sino en funcón de un caracter no medido, o también en función de ambos, nuestro caracter y otro caracter no medido.
+Beaulier & O'Meara (2016) desarrollaron el modelo HiSSE para solventar este problema.
+Este modelo nos permite considerar la posibilidad de que la especiación y la extinción varían pero no en función del carácter que estamos considerando en el análisis, sino en funcón de un caracter no medido, o también en función de ambos, nuestro caracter y otro caracter no medido.
 
 Vamos a ajustar por tanto estos modelos con nuestro data set de peces de arrecifes de coral y el paquete de R HiSSE.
 En este paquete en vez de calcular directamente la especiación y la extinción se calcula la fracción de la extinción con respecto a la especiación (epsilon = mu / lambda) y el recambio de especie "turnover" (lamba + mu).
 
-Preramos nuestros datos (al igual que en corHMM los datos deben estar en formato data.frame).
+Preparamos nuestros datos (al igual que en corHMM los datos deben estar en formato data.frame).
 
 ```{r}
 ## create input data frame for hisse
@@ -186,11 +186,14 @@ Para entender como funcionan los modelos HiSSE vamos a ajustar varios modelos.
 
 En primer lugar ajustaremos un modelo BiSSE.
 Este modelo debería tener el mismo ajuste que encontramos antes con el paquete diversitree.
-La manera de ajustar un modelo BiSSE aquí es seleccionar la opción hidden.states - FAlse and ajustando lo argumetnos de los parametros turnover=c(1,2) y eps=c(1,2) para indicarle que queremos calcular estos parámetros solo para los estados de caracter de nuestro rasgo bajo estudio.
+Creamos una matriz de transición para un modelo BiSSE con hidden.traits=0. Luego, la manera de ajustar un modelo BiSSE aquí, es seleccionar la opción hidden.states=FALSE and ajustando los argumentos de los parametros turnover=c(1,2) y eps=c(1,2) para indicarle que queremos calcular estos parámetros solo para los estados de caracter de nuestro rasgo bajo estudio (y no para un rasgo oculto y no medido).
+
 ```{r}
 ## create hisse design matrix for BiSSE model
 rates.bisse<-TransMatMakerHiSSE(hidden.traits=0)
+rates.bisse
 ## fit BiSSE model using hisse
+#warning, this make take a while
 bisse.hmle<-hisse(gt,hd,turnover=c(1,2),eps=c(1,2),hidden.states=FALSE,trans.rate=rates.bisse)
 bisse.hmle
 ```
@@ -218,17 +221,19 @@ También vamos calcular de nuevo el modelo nulo de BiSSE, es decir, uno en donde
 
 ```{r}
 ## fit CID model using hisse
+## warning, this make take a while!
 cid.mle<-hisse(gt,hd,turnover=c(1,1),eps=c(1,1),hidden.states=FALSE,trans.rate=rates.bisse)
 cid.mle
 
-## reparameterize CID model in terms of lambda## and mu
+## reparameterize CID model in terms of lambda
+## and mu
 repar.bd(cid.mle,1)
 
 ```
 
 Una vez hemos ajustado estos medelos más simples y preliminares, vamos de verdad a ajustar modelos nuevos hasta ahora.
 
-Primero vamos a ajustar un modelo donde hay una influencia en las tasas de diversificación debido a los estados de caracter de un rasgo no medido pero no hay influencia en el rasgo que sí estamos considerando. Lo llamaremos CID-2 porque es un modelo independiente del caracter (CharacterInDependent) and have two rates.
+Primero vamos a ajustar un modelo donde hay una influencia en las tasas de diversificación debido a los estados de caracter de un rasgo no medido pero no hay influencia en el rasgo que sí estamos considerando. Lo llamaremos CID-2 porque es un modelo independiente del caracter (CharacterInDependent) pero hay dos tasas de diversicación, por los estados de carácter del rasgo no medido y oculto.
 
 En primer lugar cogemos la matriz orginal rates.hisse e indicamos que hay un solo parámetro de transición entre los 4 estados de caracter posible.
 
@@ -239,10 +244,11 @@ rates.cid2[!is.na(rates.cid2)]<-1
 rates.cid2
 ```
 
-Y indicamos que es un modelo de tipo CID-2 indicando en los argumentos turnover y eps c(1,1,2,2). Estos valores corresponden a las filas de la matriz rates.cid2 que hemos creado, es decir, una tasa de diversificación para el estado de caracter A y otra para el B, pero no se asignan para 0 y 1 que son los estados observados.
+E indicamos que es un modelo de tipo CID-2 indicando en los argumentos turnover y eps c(1,1,2,2). Estos valores corresponden a las filas de la matriz rates.cid2 que hemos creado, es decir, una tasa de diversificación para el estado de caracter A y otra para el B, pero no se asignan para 0 y 1 que son los estados observados.
 
 ```{r}
 ## fit CID-2 model using hisse
+## warning, this make take a while!
 cid2.mle<-hisse(gt,hd,f=c(1,1),turnover=c(1,1,2,2),eps=c(1,1,2,2),hidden.states=TRUE,trans.rate=rates.cid2)
 cid2.mle
 
@@ -275,7 +281,7 @@ Básicamente tenemos bajas tasas de diversificación donde hay ramas largas y al
 
 
 El paquete hisse nos permite crear también un modelo tipo CID-4 donde hay 4 estados de caracter no observados, en donde las tasas de diversificación dependen de estos y no de los dos estados de caracter observados.
-Para hace esto ahora tenemos que ajustar los argumentos turnover y eps al valor c(1,1,2,2,3,3,4,4).
+Para hacer esto ahora tenemos que ajustar los argumentos turnover y eps al valor c(1,1,2,2,3,3,4,4).
 
 Las transiciones entre todos los estados caracter se modelizar con un único parámetro.
 
@@ -286,6 +292,7 @@ rates.cid4[!is.na(rates.cid4)]<-1
 rates.cid4
 
 ## fit CID-4 model
+## warning, this make take a while!
 cid4.mle<-hisse(gt,hd,f=c(1,1),turnover=c(1,1,2,2,3,3,4,4),eps=c(1,1,2,2,3,3,4,4),hidden.states=TRUE,trans.rate=rates.cid4)
 cid4.mle
 
@@ -298,6 +305,7 @@ Finalmente vamos a ajustar un modelo HiSSE donde las tasas de diversificación d
 
 ```{r}
 ## fit full HiSSE model
+## warning, this make take a while!
 hisse.mle<-hisse(gt,hd,f=c(1,1),hidden.states=TRUE,turnover=c(1,2,3,4,5,6,7,8),eps=c(1,2,3,4,5,6,7,8),trans.rate=rates.cid4)
 hisse.mle
 
@@ -325,8 +333,8 @@ Podemos ver que el mejor modelo es el más simple, seguido del BiSSE y CID-2.
 
 MODELO QUASSE
 
-Finalmente veremos un modelo en el que la tasa de especiación y/o extinción varian en función un caracter cuantitativo continuo.
-Este modelo se llama QuaSSE y está implementado en diversitree. Con este modelo podemos modelizar las tasas de especición y/o extinción con una relación lineal (hay otras funciones disponible) con nuestro rasgo continuo o bien una relación constante, es decir, no están relacionados.
+Finalmente veremos un modelo en el que la tasa de especiación y/o extinción varian en función un caracter cuantitativo continuo (Fitzjohn 2010).
+Este modelo se llama QuaSSE y está implementado en diversitree. Con este modelo podemos modelizar las tasas de especiación y/o extinción con una relación lineal (hay otras funciones disponible) con nuestro rasgo continuo o bien una relación constante, es decir, no están relacionados.
 
 Para ver como funciona este modelo vamos a cagar los data sets de la superfamilia Coccoidea de los insectos (Hardy et al., 2016). Usaremos realmente un subconjunto del set de datos.
 Hardy et al.(2016) hipotetizaron que una dieta especializada puede influenciar la tasa de diversificación. Las especialización en la dieta se midió como el número de familias de plantas que hacen de hospedadoras. Esto varía entre 1 y 109 y por lo tanto se puede considerar un rasgo continuo.
@@ -353,11 +361,11 @@ host.map<-setMap(host.map,c("yellow","darkblue"))
 plot(host.map,lwd=c(2,5),outline=FALSE,ftype="off",leg.txt="ln(host families)",legend=60)
 ```
 
-Ya casi estamos listos. Recuerdas que hay que indicar la fracción del total de especies muestreadas.
+Ya casi estamos listos. Recuerda que hay que indicar la fracción del total de especies muestreadas.
 
 Vamos a ajustar un modelo en que la relación entre especiación y extinción es constante con respecto a nuestro caracter, luego un modelo en que la extinción es constante pero la especiación evolución de manera lineal en relación a nuestro caracter, luego un modelo en que ocurre lo opuesto y finalmente un modelo en que ambos, especiación y extinción, varían de manera lineal con respecto a nuestro rasgo de interés.
 
-Es importante también tener en cuenta que en este modelo, difícil de ajustar, es importante empezar con valores iniciales los más cercanos posibles al óptimo y lo haremos con la función starting.point.
+Es importante también tener en cuenta que en este modelo, difícil de ajustar, es importante empezar con valores iniciales lo más cercanos posibles al óptimo. Esto lo hacemos normalmente con la función starting.point.
 
 Por desgracia la función starting.pint.quasse no está preparada para tener en cuenta solo una fracción de lo muestreado así que haremos un apaño y usaremos la funciones fit.bd y fitContinuous para conseguir esos valores iniciales.
 
@@ -391,6 +399,7 @@ pp<-setNames(c(p["lambda"],0,p["mu"],p["diffusion"]),argnames(lik.lambda))
 pp
 
 ## fit our first QuaSSE model
+## warning, this make take a while!
 lambda.mle<-find.mle(lik.lambda,x.init=pp,control=list(parscale=0.1),lower=rep(0,4))
 lambda.mle
 
@@ -429,7 +438,7 @@ logLik(full.mle)
 
 ```
 
-Finalmente ajustamos el modelo más simple donde tanto especiación como extinción son constantes con respecto a nuestro caracter de interes. Los valores de especiacion y extinción deben ser parecido a los ajustados con fit.bd pero el ajuste diferente porque aquí tenemos en cuenta también el caracter de interés aunque sea independiente.
+Finalmente ajustamos el modelo más simple donde tanto especiación como extinción son constantes con respecto a nuestro caracter de interes. Los valores de especiacion y extinción deben ser parecidos a los ajustados con fit.bd pero el ajuste diferente porque aquí tenemos en cuenta también el caracter de interés aunque sea independiente.
 
 ```{r}
 ## likelihood function for character-
@@ -439,15 +448,16 @@ lik.cid<-constrain(lik.cid,drift~0)
 argnames(lik.cid)
 
 ## fit CID QuaSSE model and print coefficients
-cid.mle<-find.mle(lik.cid,x.init=p,control=list(parscale=0.1),lower=rep(0,3))
-coef(cid.mle)
-logLik(cid.mle)
+cid.mle2<-find.mle(lik.cid,x.init=p,control=list(parscale=0.1),lower=rep(0,3))
+coef(cid.mle2)
+logLik(cid.mle2)
 ```
 
 Y finalmente vamos a comparar todos los modelos para ver cual tiene mejor ajuste.
 
 ```{r}
-anova(cid.mle,variable.lambda=lambda.mle,variable.mu=mu.mle,full.model=full.mle)
+anova(cid.mle2,variable.lambda=lambda.mle,variable.mu=mu.mle,full.model=full.mle)
+
 ```
 
 Claramente podemos rechazar la hipotesis nula de diversificació constante.
@@ -461,15 +471,16 @@ par(mfrow=c(2,2))
 plot(NULL,xlim=range(ln.hosts),ylim=c(0,1.5),bty="n",xlab="log(host families)",ylab=expression(paste(lambda," or ",mu)))
 mtext("(a)",line=1,adj=0)
 clip(min(ln.hosts),max(ln.hosts),0,1.5)
-abline(h=cid.mle$par["lambda"],lwd=2)
-abline(h=cid.mle$par["mu"],lwd=2,col="gray")
+abline(h=cid.mle2$par["lambda"],lwd=2)
+abline(h=cid.mle2$par["mu"],lwd=2,col="gray")
 ## b) plot variable lambda QuaSSE model
 plot(NULL,xlim=range(ln.hosts),ylim=c(0,1.5),bty="n",xlab="log(host families)",ylab=expression(paste(lambda," or ",mu)))
 mtext("(b)",line=1,adj=0)
 clip(min(ln.hosts),max(ln.hosts),0,1.5)
 abline(a=coef(lambda.mle)["l.c"],b=coef(lambda.mle)["l.m"],lwd=2)
 abline(h=coef(lambda.mle)["m.c"],lwd=2,col="gray")
-legend(x=3,y=1.5,c(expression(lambda),expression(mu)),lwd=2,col=c("black","gray"),bty="n")
+legend(x=3,y=1.5,
+c(expression(lambda),expression(mu)), lwd=2,col=c("black","gray"),bty="n")
 ## c) plot variable mu QuaSSE model
 plot(NULL,xlim=range(ln.hosts),ylim=c(0,1.5),bty="n",xlab="log(host families)",ylab=expression(paste(lambda," or ",mu)))
 mtext("(c)",line=1,adj=0)
@@ -496,4 +507,31 @@ ACTIVIDADES
 ##Your code here
 
 ```
+
+
+####################
+BIBLIOGRAFÍA BÁSICA
+
+Maddison, W. P., P. E. Midford, S. P. Otto, and T. Oakley. 2007. Estimating a binary character’s effect on
+speciation and extinction. Syst. Biol. 56:701–10.
+
+BIBLIOGRAFÍA RECOMENDADA
+
+Beaulieu, J. M., and B. C. O’Meara. 2016. Detecting hidden diversification shifts in models of trait-
+dependent speciation and extinction. Syst. Biol. 65:583–601.
+
+Beaulieu, J. M., B. C. O’Meara, and M. J. Donoghue. 2013. Identifying hidden rate changes in the evolution
+of a binary morphological character: The evolution of plant habit in campanulid angiosperms. Syst.
+Biol. 62:725–37.
+
+FitzJohn, R. G. 2010. Quantitative traits and diversification. Syst. Biol. 59:619–33.
+
+Hardy, N. B., D. A. Peterson, and B. B. Normark. 2016. Nonadaptive radiation: Pervasive diet specializa-
+tion by drift in scale insects? Evolution 70:2421–28.
+
+Price, S. A., J. J. Tavera, T. J. Near, and P. C. Wainwright. 2013. Elevated rates of morphological and
+functional diversification in reef-dwelling haemulid fishes. Evolution 67:417–28.
+
+Rabosky, D. L., and E. E. Goldberg. 2015. Model inadequacy and mistaken inferences of trait-dependent
+speciation. Syst. Biol. 64:340–55.
 
