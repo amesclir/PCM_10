@@ -16,7 +16,7 @@ Este fue el primer modelo que se describió de este tipo, en donde las tasas de 
 En este caso podemos ajustar un modelo en donde ajustamos la evolución de nuestro carácter discreto binario y nuestro árbol se ajusta a un proceso de tipo birth-death pero no está influenciado por los estados de carácter de nuestro rasgo de interés y compararlo con modelo en donde las tasas de extinción y especiación si están influenciadas por el estado de caracter de nuestro rasgo binario (Madison et al., 2007).
 
 El modelo BiSSE está implementado en el paquete de R diversitree. Usaremos la función tree.bisse . Esta función ajusta 6 parámetros del modelo BiSSE que son la tasa de especiación en el estado 0, la tasa de especiación en el estado 1, la tasa de extinción en el estado 0, la tasa de extinción en el estado 1, la tasa de transición de 0 a 1 y la tasa de transición de 1 a 0 (lambda0, lambda1, mu0, mu1, q01, q10).
-Para compararlo con un modelo nulo, simularemos un proceso birth-deatth con un caracter binario que evoluciona bajo un modelo de tip Mk, pero en donde no hay dependencia entre las tasas de diversificación y los estados de caracter del rasgo binario.
+Para compararlo con un modelo nulo, simularemos un proceso birth-death con un caracter binario que evoluciona bajo un modelo de tip Mk, pero en donde no hay dependencia entre las tasas de diversificación y los estados de caracter del rasgo binario.
 
 ```{r}
 library(diversitree)
@@ -47,7 +47,7 @@ mtext("(b)",lwd=1,adj=0,font=1)
 
 ```
 
-Podemos apreciar que en el primer caso hay una mayor tendencia a estar en el estado de caracter gris porque este tiene una tasa de diverisficación mayor que el negro (simulado con un modelo BiSSE). En el segundo caso no hay una tendencia tan clara (simulado con un modelo independiente).
+Podemos apreciar que en el primer caso hay una mayor tendencia a estar en el estado de caracter gris porque este tiene una tasa de diversificación mayor que el negro (simulado con un modelo BiSSE). En el segundo caso no hay una tendencia tan clara (simulado con un modelo independiente).
 
 Ahora vamos a ajustar nuestro modelo con datos experimentales de peces de arrecifes de coral. Vamos a comparar el modelo en que las tasas de diversificación están afectadas por los estados de caracter, vivir en arrecifes de coral frente a no vivir en arrecifes de coral, con otro modelo en donde dichas tasas son independientes (Price et al., 2013).
 
@@ -124,7 +124,7 @@ prior
 
 ## run Bayesian MCMC
 bisse.mcmc<-mcmc(bisse.model,bisse.mle$par,nsteps=1000,prior=prior,w=0.1,print.every=100)
-
+bisse.mcmc
 ##subdivide plot and set margins
 par(mfrow =c(1,2),mar=c(5.1,4.1,3.1,2.1))
 ##set colors for plotting
