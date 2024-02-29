@@ -24,7 +24,7 @@ library(diversitree)
 par(mfrow=c(1,2),mar=c(0.1,1.1,2.1,1.1))
 ## panel a)
 ## set BiSSE parameter values
-pars<-setNames(c(0.1,0.3,0.01,0.01,0.03,0.03),c("lambda0","lambda1","mu0,","mu1","q01","q10"))
+pars<-setNames(c(0.1,0.3,0.01,0.01,0.03,0.03),c("lambda0","lambda1","mu0","mu1","q01","q10"))
 pars
 ## simulate BiSSE tree
 phy.bisse<-tree.bisse(pars,max.taxa=80,x0=0)
@@ -367,7 +367,7 @@ Vamos a ajustar un modelo en que la relación entre especiación y extinción es
 
 Es importante también tener en cuenta que en este modelo, difícil de ajustar, es importante empezar con valores iniciales lo más cercanos posibles al óptimo. Esto lo hacemos normalmente con la función starting.point.
 
-Por desgracia la función starting.pint.quasse no está preparada para tener en cuenta solo una fracción de lo muestreado así que haremos un apaño y usaremos la funciones fit.bd y fitContinuous para conseguir esos valores iniciales.
+Por desgracia la función starting.point.quasse no está preparada para tener en cuenta solo una fracción de lo muestreado así que haremos un apaño y usaremos la funciones fit.bd y fitContinuous para conseguir esos valores iniciales.
 
 ```{r}
 
