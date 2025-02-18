@@ -11,9 +11,9 @@ En esta sesión veremos diferentes modelos donde las tasas de diversificación d
 
 MODELO BISSE
 
-Este fue el primer modelo que se describió de este tipo, en donde las tasas de diversificación (especiación y extinción) dependen del estado de carácter un caracter discreto binario (Madison et al., 2007).
+Este fue el primer modelo que se describió de este tipo, en donde las tasas de diversificación (especiación y extinción) dependen del estado de carácter discreto binario (Madison et al., 2007).
 
-En este caso podemos ajustar un modelo en donde ajustamos la evolución de nuestro carácter discreto binario y nuestro árbol se ajusta a un proceso de tipo birth-death pero no está influenciado por los estados de carácter de nuestro rasgo de interés y compararlo con modelo en donde las tasas de extinción y especiación si están influenciadas por el estado de caracter de nuestro rasgo binario (Madison et al., 2007).
+En este caso podemos ajustar un modelo en donde estimamos la evolución de nuestro carácter discreto binario y nuestro árbol se ajusta a un proceso de tipo birth-death pero no está influenciado por los estados de carácter de nuestro rasgo de interés y compararlo con modelo en donde las tasas de extinción y especiación si están influenciadas por el estado de caracter de nuestro rasgo binario (Madison et al., 2007).
 
 El modelo BiSSE está implementado en el paquete de R diversitree. Usaremos la función tree.bisse . Esta función ajusta 6 parámetros del modelo BiSSE que son la tasa de especiación en el estado 0, la tasa de especiación en el estado 1, la tasa de extinción en el estado 0, la tasa de extinción en el estado 1, la tasa de transición de 0 a 1 y la tasa de transición de 1 a 0 (lambda0, lambda1, mu0, mu1, q01, q10).
 Para compararlo con un modelo nulo, simularemos un proceso birth-death con un caracter binario que evoluciona bajo un modelo de tip Mk, pero en donde no hay dependencia entre las tasas de diversificación y los estados de caracter del rasgo binario.
@@ -123,6 +123,7 @@ prior<-make.prior.exponential(1/(2*0.4))
 prior
 
 ## run Bayesian MCMC
+##warning! This may take a while
 bisse.mcmc<-mcmc(bisse.model,bisse.mle$par,nsteps=1000,prior=prior,w=0.1,print.every=100)
 bisse.mcmc
 ##subdivide plot and set margins
@@ -217,7 +218,7 @@ repar.bd<-function(object,k=2){
 repar.bd(bisse.hmle)
 ```
 
-También vamos calcular de nuevo el modelo nulo de BiSSE, es decir, uno en donde se modelizan las tasas de especiación y extinción y también el rasgo binario, pero de manera independiente. Llamamos aquí a ese modelo CID. Para ello tenemos que cambiar los argumentos de turnover y eps ambos a c(1,1), es decir, una sola categoría de tasas para cada parámetro.
+También vamos a calcular de nuevo el modelo nulo de BiSSE, es decir, uno en donde se modelizan las tasas de especiación y extinción y también el rasgo binario, pero de manera independiente. Llamamos aquí a ese modelo CID. Para ello tenemos que cambiar los argumentos de turnover y eps ambos a c(1,1), es decir, una sola categoría de tasas para cada parámetro.
 
 ```{r}
 ## fit CID model using hisse
@@ -235,11 +236,12 @@ Una vez hemos ajustado estos medelos más simples y preliminares, vamos de verda
 
 Primero vamos a ajustar un modelo donde hay una influencia en las tasas de diversificación debido a los estados de caracter de un rasgo no medido pero no hay influencia en el rasgo que sí estamos considerando. Lo llamaremos CID-2 porque es un modelo independiente del caracter (CharacterInDependent) pero hay dos tasas de diversicación, por los estados de carácter del rasgo no medido y oculto.
 
-En primer lugar cogemos la matriz orginal rates.hisse e indicamos que hay un solo parámetro de transición entre los 4 estados de caracter posible.
+En primer lugar cogemos la matriz orginal rates.hisse e indicamos que hay un solo parámetro de transición entre los 4 estados de caracter posible (esto lo hacemos para simplificar la matriz de transición entre estados de caracter).
 
 ```{r}
 ## create CID-2 design matrix
 rates.cid2<-rates.hisse
+rates.cid2
 rates.cid2[!is.na(rates.cid2)]<-1
 rates.cid2
 ```
@@ -256,7 +258,7 @@ cid2.mle
 repar.bd(cid2.mle,k=4)
 ```
 
-Si echas un vistazo a los resultados nuestras tasas de diversificación varían en función de los estados de caracter A y B pero no en función de 0 y 1.
+Si echas un vistazo a los resultados, nuestras tasas de diversificación varían en función de los estados de caracter A y B pero no en función de 0 y 1.
 
 El paquete hisse nos permite visualizar la variación filogenética bajo nuestro modelo tipo hidden. La función MarginReconHiSSE se puede usar para obtener una reconstrucción marginal de los estados observados y marginales en la filogenia y luego representarlos en la filogenia con la función plot.hisse.states.
 
@@ -268,7 +270,7 @@ cid2.recon<-MarginReconHiSSE(phy=gt,data=hd,f=cid2.mle$f,pars=cid2.mle$solution,
 cid2.map<-plot.hisse.states(cid2.recon,rate.param="speciation",show.tip.label=TRUE,type="phylogram",fsize=0.6,legend.position=c(0,0.3,0,0.3))
 ```
 
-La función plot.hisse.states no es muy flexible. Nos da dos resultados, la reconstrucción del caracter observado y la reconstrucción del caracter no observado.
+La función plot.hisse.states no es muy flexible. Nos da dos resultados, la reconstrucción del caracter observado y las tasas de especiación or diversificación.
 
 Podemos plotear también la tasas de diversificacón usando una función genérica de phytools.
 
@@ -301,7 +303,7 @@ repar.bd(cid4.mle,8)
 
 ```
 
-Finalmente vamos a ajustar un modelo HiSSE donde las tasas de diversificación dependen de los estados de caracter de nuestro rasgo obsrvado y también de los 4 estados de caracter no observados.
+Finalmente vamos a ajustar un modelo HiSSE donde las tasas de diversificación dependen de los estados de caracter de nuestro rasgo observado y también de los 4 estados de caracter no observados.
 
 ```{r}
 ## fit full HiSSE model
@@ -460,7 +462,7 @@ anova(cid.mle2,variable.lambda=lambda.mle,variable.mu=mu.mle,full.model=full.mle
 
 ```
 
-Claramente podemos rechazar la hipotesis nula de diversificació constante.
+Claramente podemos rechazar la hipotesis nula de diversificación constante.
 
 Echemos un vistazo a los modelos.
 
