@@ -163,10 +163,10 @@ Uno de los grandes problemas de los modelos SSE es que tienen una gran tasa de e
 Es decir, que pasa si nuestro modelo nulo es peor que BiSSE pero cualquier otro modelo en donde las tasas de especiación y extinción no son constantes, si no que varian con el tiempo, es mejor que nuestro modelo BiSSE. O quizás nuestras tasas varían en función de otro caracter pero que no estamos incluyendo en el análisis.
 
 Beaulier & O'Meara (2016) desarrollaron el modelo HiSSE para solventar este problema.
-Este modelo nos permite considerar la posibilidad de que la especiación y la extinción varían pero no en función del carácter que estamos considerando en el análisis, sino en funcón de un caracter no medido, o también en función de ambos, nuestro caracter y otro caracter no medido.
+Este modelo nos permite considerar la posibilidad de que la especiación y la extinción varían pero no en función del carácter que estamos considerando en el análisis, sino en función de un caracter no medido, o también en función de ambos, nuestro caracter y otro caracter no medido.
 
 Vamos a ajustar por tanto estos modelos con nuestro data set de peces de arrecifes de coral y el paquete de R HiSSE.
-En este paquete en vez de calcular directamente la especiación y la extinción se calcula la fracción de la extinción con respecto a la especiación (epsilon = mu / lambda) y el recambio de especie "turnover" (lamba + mu).
+En este paquete en vez de calcular directamente la especiación y la extinción se calcula la fracción de la extinción con respecto a la especiación (epsilon = mu / lambda) y el recambio de especies "turnover" (lamba + mu).
 
 Preparamos nuestros datos (al igual que en corHMM los datos deben estar en formato data.frame).
 
@@ -232,7 +232,7 @@ repar.bd(cid.mle,1)
 
 ```
 
-Una vez hemos ajustado estos medelos más simples y preliminares, vamos de verdad a ajustar modelos nuevos hasta ahora.
+Una vez hemos ajustado estos modelos más simples y preliminares, vamos de verdad a ajustar modelos nuevos hasta ahora.
 
 Primero vamos a ajustar un modelo donde hay una influencia en las tasas de diversificación debido a los estados de caracter de un rasgo no medido pero no hay influencia en el rasgo que sí estamos considerando. Lo llamaremos CID-2 porque es un modelo independiente del caracter (CharacterInDependent) pero hay dos tasas de diversicación, por los estados de carácter del rasgo no medido y oculto.
 
@@ -330,7 +330,7 @@ logLik.hisse.fit<-function(x,...){
 data.frame(model=c("CID","BiSSE","HiSSE CID-2","HiSSE CID-4","HiSSE full"),logL=sapply(list(cid.mle,bisse.hmle,cid2.mle,cid4.mle,hisse.mle),logLik),k=sapply(list(cid.mle,bisse.hmle,cid2.mle,cid4.mle,hisse.mle),function(x) attr(logLik(x),"df")),AIC=aic<-sapply(list(cid.mle,bisse.hmle,cid2.mle,cid4.mle,hisse.mle),AIC),Akaike.weight=unclass(aic.w(aic)))
 ```
 
-Podemos ver que el mejor modelo es el más simple, seguido del BiSSE y CID-2.
+Podemos ver que el mejor modelo es el más simple (CID), seguido del BiSSE y CID-2.
 
 
 MODELO QUASSE
